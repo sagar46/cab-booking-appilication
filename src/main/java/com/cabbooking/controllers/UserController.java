@@ -29,7 +29,7 @@ public class UserController {
         log.debug("UserController.addUser call completed...");
         return Response.<AddUserResponse>builder()
                 .data(UserDTOConverter.convertUserToAddUserResponse(user))
-                .message("User created succefully")
+                .message("User created successfully")
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value())
                 .build();
