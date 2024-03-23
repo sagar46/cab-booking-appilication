@@ -1,6 +1,5 @@
 package com.cabbooking.domain;
 
-import com.cabbooking.dto.CoordinatesDTO;
 import com.cabbooking.enums.Gender;
 import lombok.Builder;
 import lombok.Data;

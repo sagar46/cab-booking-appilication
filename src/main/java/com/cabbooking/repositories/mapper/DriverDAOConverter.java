@@ -6,7 +6,7 @@ import com.cabbooking.domain.Coordinates;
 import com.cabbooking.domain.Driver;
 
 public class DriverDAOConverter {
-    public static DriverDAO convertDriverToDriverDAO(Driver driver){
+    public static DriverDAO convertDriverToDriverDAO(Driver driver) {
         return DriverDAO.builder()
                 .name(driver.getName())
                 .age(driver.getAge())
@@ -16,7 +16,8 @@ public class DriverDAOConverter {
                 .coordinatesDao(convertCoordinatesToCoordinatesDAO(driver.getCoordinates()))
                 .build();
     }
-    public static Driver convertDriverDAOToDriver(DriverDAO driverDAO){
+
+    public static Driver convertDriverDAOToDriver(DriverDAO driverDAO) {
         return Driver.builder()
                 .id(driverDAO.getId())
                 .name(driverDAO.getName())
@@ -27,13 +28,15 @@ public class DriverDAOConverter {
                 .coordinates(convertCoordinatesDAOToCoordinates(driverDAO.getCoordinatesDao()))
                 .build();
     }
-    private static Coordinates convertCoordinatesDAOToCoordinates(CoordinatesDao coordinatesDao){
+
+    private static Coordinates convertCoordinatesDAOToCoordinates(CoordinatesDao coordinatesDao) {
         return Coordinates.builder()
                 .xCoordinate(coordinatesDao.getXCoordinate())
                 .yCoordinate(coordinatesDao.getYCoordinate())
                 .build();
     }
-    private static CoordinatesDao convertCoordinatesToCoordinatesDAO(Coordinates coordinates){
+
+    private static CoordinatesDao convertCoordinatesToCoordinatesDAO(Coordinates coordinates) {
         return CoordinatesDao.builder()
                 .xCoordinate(coordinates.getXCoordinate())
                 .yCoordinate(coordinates.getYCoordinate())

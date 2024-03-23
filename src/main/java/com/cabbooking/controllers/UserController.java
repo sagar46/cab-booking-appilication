@@ -22,8 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+
     @PostMapping("/")
-    public Response<AddUserResponse> addUser(@RequestBody AddUserRequest addUserRequest){
+    public Response<AddUserResponse> addUser(@RequestBody AddUserRequest addUserRequest) {
         log.debug("UserController.addUser call started...");
         User user = userService.addUser(UserDTOConverter.convertAddUserRequestToUser(addUserRequest));
         log.debug("UserController.addUser call completed...");
