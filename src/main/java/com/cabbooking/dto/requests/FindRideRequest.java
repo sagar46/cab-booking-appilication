@@ -1,9 +1,11 @@
 package com.cabbooking.dto.requests;
 
-import lombok.AllArgsConstructor;
+import com.cabbooking.dto.CoordinatesDTO;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class FindRideRequest {
+    private String username;
+    private CoordinatesDTO source;
+    private CoordinatesDTO destination;
 }

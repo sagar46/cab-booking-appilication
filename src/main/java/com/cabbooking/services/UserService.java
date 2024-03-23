@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
-    public User addUser(User user){
+    public User addUser(User user) {
         log.debug("UserService.addUser call started...");
         User savedUser = userRepository.addUser(user);
         log.debug("UserService.addUser call completed...");

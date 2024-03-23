@@ -23,7 +23,7 @@ public class DriverController {
     private final DriverService driverService;
 
     @PostMapping("/")
-    public Response<AddDriverResponse> addDriver(@RequestBody AddDriverRequest addDriverRequest){
+    public Response<AddDriverResponse> addDriver(@RequestBody AddDriverRequest addDriverRequest) {
         log.debug("DriverController.addDriver call started...");
         Driver savedDriver = driverService.addDriver(DriverDTOConverter.convertAddDriverRequestToDriver(addDriverRequest));
         log.debug("DriverController.addDriver call completed...");

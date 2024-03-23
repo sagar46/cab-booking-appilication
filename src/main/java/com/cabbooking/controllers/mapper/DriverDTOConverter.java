@@ -9,7 +9,7 @@ import com.cabbooking.dto.responses.AddDriverResponse;
 
 public class DriverDTOConverter {
 
-    public static Driver convertAddDriverRequestToDriver(AddDriverRequest addDriverRequest){
+    public static Driver convertAddDriverRequestToDriver(AddDriverRequest addDriverRequest) {
         return Driver.builder()
                 .name(addDriverRequest.getName())
                 .gender(addDriverRequest.getGender())
@@ -19,7 +19,8 @@ public class DriverDTOConverter {
                 .coordinates(convertCoordinateDTOToCoordinate(addDriverRequest.getCoordinatesDTO()))
                 .build();
     }
-    public static Driver convertDriverDTOToDriver(DriverDTO driverDTO){
+
+    public static Driver convertDriverDTOToDriver(DriverDTO driverDTO) {
         return Driver.builder()
                 .name(driverDTO.getName())
                 .gender(driverDTO.getGender())
@@ -29,7 +30,20 @@ public class DriverDTOConverter {
                 .coordinates(convertCoordinateDTOToCoordinate(driverDTO.getCoordinatesDTO()))
                 .build();
     }
-    public static AddDriverResponse convertDriverToAddDriverResponse(Driver driver){
+
+    public static DriverDTO convertDriverToDriverDTO(Driver driver) {
+        DriverDTO driverDTO = new DriverDTO();
+        driverDTO.setId(driver.getId());
+        driverDTO.setName(driver.getName());
+        driverDTO.setAge(driver.getAge());
+        driverDTO.setGender(driver.getGender());
+        driverDTO.setVehicleBrand(driver.getVehicleBrand());
+        driverDTO.setVehicleNumber(driver.getVehicleNumber());
+        driverDTO.setCoordinatesDTO(convertCoordinatesToCoordinatesDTO(driver.getCoordinates()));
+        return driverDTO;
+    }
+
+    public static AddDriverResponse convertDriverToAddDriverResponse(Driver driver) {
         AddDriverResponse addDriverResponse = new AddDriverResponse();
         addDriverResponse.setId(driver.getId());
         addDriverResponse.setName(driver.getName());
@@ -40,13 +54,15 @@ public class DriverDTOConverter {
         addDriverResponse.setCoordinatesDTO(convertCoordinatesToCoordinatesDTO(driver.getCoordinates()));
         return addDriverResponse;
     }
-    private static CoordinatesDTO convertCoordinatesToCoordinatesDTO(Coordinates coordinates){
+
+    public static CoordinatesDTO convertCoordinatesToCoordinatesDTO(Coordinates coordinates) {
         CoordinatesDTO coordinatesDTO = new CoordinatesDTO();
         coordinatesDTO.setXCoordinates(coordinates.getXCoordinate());
         coordinatesDTO.setYCoordinates(coordinates.getYCoordinate());
         return coordinatesDTO;
     }
-    private static Coordinates convertCoordinateDTOToCoordinate(CoordinatesDTO coordinatesDTO){
+
+    public static Coordinates convertCoordinateDTOToCoordinate(CoordinatesDTO coordinatesDTO) {
         return Coordinates.builder()
                 .xCoordinate(coordinatesDTO.getXCoordinates())
                 .yCoordinate(coordinatesDTO.getYCoordinates())

@@ -1,9 +1,11 @@
 package com.cabbooking.dto.responses;
 
-import lombok.AllArgsConstructor;
+import com.cabbooking.dto.DriverDTO;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 public class FindRideResponse {
+    private List<DriverDTO> availableRides;
 }

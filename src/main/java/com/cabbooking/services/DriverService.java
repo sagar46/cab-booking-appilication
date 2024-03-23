@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class DriverService {
     private final DriverRepository driverRepository;
 
-    public Driver addDriver(Driver driver){
+    public Driver addDriver(Driver driver) {
         log.debug("DriverService.addDriver call started...");
         Driver savedDrive = driverRepository.addDriver(driver);
         log.debug("DriverService.addDriver call completed...");
