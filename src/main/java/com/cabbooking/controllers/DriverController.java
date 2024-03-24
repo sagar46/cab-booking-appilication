@@ -32,7 +32,7 @@ public class DriverController {
     public Response<AddDriverResponse> addDriver(@RequestBody AddDriverRequest addDriverRequest) {
         log.debug("DriverController.addDriver call started...");
         Driver savedDriver = driverService.addDriver(DriverDTOConverter.convertAddDriverRequestToDriver(addDriverRequest));
-        String driverAddedSuccessMsg = MessageFormat.format(driverAddedMessage,savedDriver.getName());
+        String driverAddedSuccessMsg = MessageFormat.format(driverAddedMessage, savedDriver.getName());
         log.debug("DriverController.addDriver call completed...");
         return Response.<AddDriverResponse>builder()
                 .data(DriverDTOConverter.convertDriverToAddDriverResponse(savedDriver))

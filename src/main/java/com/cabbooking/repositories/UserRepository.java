@@ -26,6 +26,7 @@ public class UserRepository {
     private String userAlreadyExistMsg;
     @Value("${user.error.not-found}")
     private String userNotFoundMsg;
+
     public User addUser(User user) {
         log.debug("UserRepository.adduser call started...");
         UserDAO userDAO = UserDAOConverter.convertUserToUserDao(user);

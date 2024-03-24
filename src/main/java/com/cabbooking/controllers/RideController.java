@@ -53,7 +53,7 @@ public class RideController {
         if (drivers.isEmpty()) {
             findRideMessage = noRideMsg;
         } else {
-            findRideMessage = MessageFormat.format(availableRideMsg,drivers.size());
+            findRideMessage = MessageFormat.format(availableRideMsg, drivers.size());
         }
         FindRideResponse findRideResponse = new FindRideResponse();
         findRideResponse.setAvailableRides(drivers.stream().map(DriverDTOConverter::convertDriverToDriverDTO).collect(Collectors.toList()));
@@ -70,7 +70,7 @@ public class RideController {
     public Response<ChooseRideResponse> chooseRide(@RequestBody ChooseRideRequest chooseRideRequest) {
         log.debug("RideController.chooseRise call started...");
         Driver driver = rideServiceImpl.chooseRide(RideDataDTOConverter.convertChooseRideRequestToRideData(chooseRideRequest));
-        String chooseRideSuccessMsg = MessageFormat.format(chooseRideMsg,driver.getCoordinates(),driver.getName());
+        String chooseRideSuccessMsg = MessageFormat.format(chooseRideMsg, driver.getCoordinates(), driver.getName());
         log.debug("RideController.chooseRide call completed...");
         return Response.<ChooseRideResponse>builder()
                 .message(chooseRideSuccessMsg)

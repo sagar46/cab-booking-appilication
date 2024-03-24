@@ -28,11 +28,12 @@ public class UserController {
 
     @Value("${user.success.add-user}")
     private String userAddedMsg;
+
     @PostMapping("/")
     public Response<AddUserResponse> addUser(@RequestBody AddUserRequest addUserRequest) {
         log.debug("UserController.addUser call started...");
         User user = userServiceImpl.addUser(UserDTOConverter.convertAddUserRequestToUser(addUserRequest));
-        String userAddedSuccessMsg = MessageFormat.format(userAddedMsg,user.getName());
+        String userAddedSuccessMsg = MessageFormat.format(userAddedMsg, user.getName());
         log.debug("UserController.addUser call completed...");
         return Response.<AddUserResponse>builder()
                 .data(UserDTOConverter.convertUserToAddUserResponse(user))
