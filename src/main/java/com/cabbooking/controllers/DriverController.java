@@ -5,7 +5,7 @@ import com.cabbooking.domain.Driver;
 import com.cabbooking.dto.Response;
 import com.cabbooking.dto.requests.AddDriverRequest;
 import com.cabbooking.dto.responses.AddDriverResponse;
-import com.cabbooking.services.DriverService;
+import com.cabbooking.services.impl.DriverServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/driver")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DriverController {
-    private final DriverService driverService;
+    private final DriverServiceImpl driverService;
 
     @PostMapping("/")
     public Response<AddDriverResponse> addDriver(@RequestBody AddDriverRequest addDriverRequest) {
@@ -29,9 +29,9 @@ public class DriverController {
         log.debug("DriverController.addDriver call completed...");
         return Response.<AddDriverResponse>builder()
                 .data(DriverDTOConverter.convertDriverToAddDriverResponse(savedDriver))
-                .message("Driver added successfully")
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
+                .message("Driver added successfully.")
+                .statusCode(HttpStatus.CREATED.value())
+                .status(HttpStatus.CREATED)
                 .build();
     }
 }

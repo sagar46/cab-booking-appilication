@@ -17,6 +17,7 @@ public class DriverDTOConverter {
                 .vehicleBrand(addDriverRequest.getVehicleBrand())
                 .vehicleNumber(addDriverRequest.getVehicleNumber())
                 .coordinates(convertCoordinateDTOToCoordinate(addDriverRequest.getCoordinatesDTO()))
+                .isOccupied(false)
                 .build();
     }
 
@@ -28,6 +29,7 @@ public class DriverDTOConverter {
                 .vehicleBrand(driverDTO.getVehicleBrand())
                 .vehicleNumber(driverDTO.getVehicleNumber())
                 .coordinates(convertCoordinateDTOToCoordinate(driverDTO.getCoordinatesDTO()))
+                .isOccupied(driverDTO.isOccupied())
                 .build();
     }
 
@@ -40,6 +42,7 @@ public class DriverDTOConverter {
         driverDTO.setVehicleBrand(driver.getVehicleBrand());
         driverDTO.setVehicleNumber(driver.getVehicleNumber());
         driverDTO.setCoordinatesDTO(convertCoordinatesToCoordinatesDTO(driver.getCoordinates()));
+        driverDTO.setOccupied(driver.isOccupied());
         return driverDTO;
     }
 
