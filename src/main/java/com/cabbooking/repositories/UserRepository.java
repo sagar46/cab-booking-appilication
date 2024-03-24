@@ -9,6 +9,7 @@ import com.cabbooking.store.UserStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,6 +22,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class UserRepository {
     private final UserStore userStore;
 
+    @Value("${user.error.already-exist}")
+    private String userAlreadyExistMsg;
+    @Value("${user.error.not-found}")
+    private String userNotFoundMsg;
     public User addUser(User user) {
         log.debug("UserRepository.adduser call started...");
         UserDAO userDAO = UserDAOConverter.convertUserToUserDao(user);
@@ -33,7 +38,7 @@ public class UserRepository {
         List<UserDAO> userDAOS = getAllUser();
         userDAOS.forEach(userExist -> {
             if (Objects.equals(userExist.getName(), userDAO.getName())) {
-                throw new CabBookingException("User Already exist.");
+                throw new CabBookingException(userAlreadyExistMsg);
             }
         });
         return userStore.addUserInDb(userDAO);
@@ -48,7 +53,7 @@ public class UserRepository {
             }
         });
         if (Objects.isNull(user.get())) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException(userNotFoundMsg);
         }
         return UserDAOConverter.convertUserDaoToUser(user.get());
     }

@@ -15,7 +15,7 @@ public class DriverStore {
 
     public DriverDAO addDriverToStore(DriverDAO driverDAO) {
         if (!driverStore.isEmpty()) {
-            driverDAO.setId(driverStore.get(driverStore.size() - 1).getId());
+            driverDAO.setId(driverStore.get(driverStore.size() - 1).getId() +1);
         } else {
             driverDAO.setId(1);
         }

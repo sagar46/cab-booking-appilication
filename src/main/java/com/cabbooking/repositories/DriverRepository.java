@@ -9,6 +9,7 @@ import com.cabbooking.store.DriverStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,6 +21,10 @@ import java.util.concurrent.atomic.AtomicReference;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DriverRepository {
     private final DriverStore driverStore;
+    @Value("${driver.error.already-exist}")
+    private String driverAlreadyExistMsg;
+    @Value("${driver.error.not-found}")
+    private String driverNotFoundMsg;
 
     public Driver addDriver(Driver driver) {
         log.debug("DriverRepository.addDriver call started...");
@@ -32,7 +37,7 @@ public class DriverRepository {
         List<DriverDAO> driverDAOS = getAllDriver();
         driverDAOS.forEach(driverExist -> {
             if (Objects.equals(driverExist.getName(), driverDAO.getName())) {
-                throw new CabBookingException("Driver is already exist.");
+                throw new CabBookingException(driverAlreadyExistMsg);
             }
         });
         return driverStore.addDriverToStore(driverDAO);
@@ -60,7 +65,7 @@ public class DriverRepository {
             }
         });
         if (Objects.isNull(driverDAOA.get())) {
-            throw new DriverNotFoundException("Driver not found");
+            throw new DriverNotFoundException(driverNotFoundMsg);
         }
         return DriverDAOConverter.convertDriverDAOToDriver(driverDAOA.get());
     }

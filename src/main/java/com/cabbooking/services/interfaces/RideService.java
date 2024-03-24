@@ -9,5 +9,7 @@ import java.util.List;
 public interface RideService {
     public List<Driver> findRide(String username, Coordinates source, Coordinates destination);
 
-    public void chooseRide(RideData rideData);
+    public Driver chooseRide(RideData rideData);
+
+    public Driver completeRide(RideData rideData);
 }

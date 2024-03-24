@@ -11,6 +11,7 @@ import com.cabbooking.store.RideStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,12 +24,15 @@ public class RideRepository {
     private final DriverRepository driverRepository;
     private final RideStore rideStore;
 
+    @Value("${driver.error.no-driver}")
+    private String noDriverErrorMsg;
+
 
     public List<Driver> getAllDrivers() {
         log.debug("RideRepository.getAllDrivers call started...");
         List<DriverDAO> driverDAOS = driverRepository.getAllDriver();
         if (Objects.isNull(driverDAOS) || driverDAOS.isEmpty()) {
-            throw new DriverNotFoundException("No Drivers registered yet.");
+            throw new DriverNotFoundException(noDriverErrorMsg);
         }
         List<Driver> drivers = driverRepository.getAllDriver().stream().map(DriverDAOConverter::convertDriverDAOToDriver).toList();
         log.debug("RideRepository.getAllDrivers call completed...");
@@ -40,6 +44,12 @@ public class RideRepository {
         RideDataDao savedRide = saveRide(RideDAOConverter.convertRideDataToRideDataDAO(rideData));
         log.debug("RideRepository.chooseRide call completed...");
         RideDAOConverter.convertRideDAOToRideData(savedRide);
+    }
+
+    public void completeRide(RideData rideData) {
+        log.debug("RideRepository.completeRide call started...");
+        rideStore.completeRide(rideData);
+        log.debug("RideRepository.completeRide call completed...");
     }
 
     public RideDataDao saveRide(RideDataDao rideDataDao) {

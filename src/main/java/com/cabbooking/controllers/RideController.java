@@ -4,6 +4,7 @@ import com.cabbooking.controllers.mapper.DriverDTOConverter;
 import com.cabbooking.controllers.mapper.RideDataDTOConverter;
 import com.cabbooking.domain.Coordinates;
 import com.cabbooking.domain.Driver;
+import com.cabbooking.domain.RideData;
 import com.cabbooking.dto.Response;
 import com.cabbooking.dto.requests.ChooseRideRequest;
 import com.cabbooking.dto.requests.CompleteRideRequest;
@@ -15,12 +16,14 @@ import com.cabbooking.services.impl.RideServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,24 +34,33 @@ import java.util.stream.Collectors;
 public class RideController {
     private final RideServiceImpl rideServiceImpl;
 
+    @Value("${ride.success.no-ride}")
+    private String noRideMsg;
+    @Value("${ride.success.ride-available}")
+    private String availableRideMsg;
+    @Value("${ride.success.choose-ride}")
+    private String chooseRideMsg;
+    @Value("${ride.success.complete-ride}")
+    private String completeRideMsg;
+
     @PostMapping("all")
     public Response<FindRideResponse> findRide(@RequestBody FindRideRequest findRideRequest) {
         log.debug("RideController.findRide call started...");
         Coordinates source = DriverDTOConverter.convertCoordinateDTOToCoordinate(findRideRequest.getSource());
         Coordinates destination = DriverDTOConverter.convertCoordinateDTOToCoordinate(findRideRequest.getDestination());
         List<Driver> drivers = rideServiceImpl.findRide(findRideRequest.getUsername(), source, destination);
-        String message = "";
+        String findRideMessage = "";
         if (drivers.isEmpty()) {
-            message = "No ride available for now";
+            findRideMessage = noRideMsg;
         } else {
-            message = "Total ride avialable:" + drivers.size();
+            findRideMessage = MessageFormat.format(availableRideMsg,drivers.size());
         }
         FindRideResponse findRideResponse = new FindRideResponse();
         findRideResponse.setAvailableRides(drivers.stream().map(DriverDTOConverter::convertDriverToDriverDTO).collect(Collectors.toList()));
         log.debug("RideController.findRide call completed...");
         return Response.<FindRideResponse>builder()
                 .data(findRideResponse)
-                .message(message)
+                .message(findRideMessage)
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value())
                 .build();
@@ -57,10 +69,11 @@ public class RideController {
     @PostMapping("/choose")
     public Response<ChooseRideResponse> chooseRide(@RequestBody ChooseRideRequest chooseRideRequest) {
         log.debug("RideController.chooseRise call started...");
-        rideServiceImpl.chooseRide(RideDataDTOConverter.convertChooseRideRequestToRideData(chooseRideRequest));
+        Driver driver = rideServiceImpl.chooseRide(RideDataDTOConverter.convertChooseRideRequestToRideData(chooseRideRequest));
+        String chooseRideSuccessMsg = MessageFormat.format(chooseRideMsg,driver.getCoordinates(),driver.getName());
         log.debug("RideController.chooseRide call completed...");
         return Response.<ChooseRideResponse>builder()
-                .message("Ride booked successfully.")
+                .message(chooseRideSuccessMsg)
                 .statusCode(HttpStatus.OK.value())
                 .status(HttpStatus.OK)
                 .build();
@@ -69,9 +82,13 @@ public class RideController {
     @PostMapping("/completed")
     public Response<CompleteRideResponse> completeRide(@RequestBody CompleteRideRequest completeRideRequest) {
         log.debug("RideController.completeRide call started...");
+        rideServiceImpl.completeRide(RideData.builder()
+                .username(completeRideRequest.getUsername())
+                .driverName(completeRideRequest.getDriverName())
+                .build());
         log.debug("RideController.completeRide call completed...");
         return Response.<CompleteRideResponse>builder()
-                .message("Ride Completed")
+                .message(completeRideMsg)
                 .status(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value())
                 .build();
