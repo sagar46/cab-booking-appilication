@@ -3,6 +3,7 @@ package com.cabbooking.repositories;
 import com.cabbooking.dao.UserDAO;
 import com.cabbooking.domain.User;
 import com.cabbooking.exception.CabBookingException;
+import com.cabbooking.exception.UserNotFoundException;
 import com.cabbooking.repositories.mapper.UserDAOConverter;
 import com.cabbooking.store.UserStore;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,9 @@ public class UserRepository {
                 user.set(userDAO);
             }
         });
+        if (Objects.isNull(user.get())) {
+            throw new UserNotFoundException("User not found");
+        }
         return UserDAOConverter.convertUserDaoToUser(user.get());
     }
 

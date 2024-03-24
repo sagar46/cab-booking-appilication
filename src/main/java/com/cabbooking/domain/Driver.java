@@ -14,4 +14,5 @@ public class Driver {
     private String vehicleBrand;
     private String vehicleNumber;
     private Coordinates coordinates;
+    private boolean isOccupied;
 }

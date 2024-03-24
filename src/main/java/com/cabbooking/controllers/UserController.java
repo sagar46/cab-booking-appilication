@@ -5,7 +5,7 @@ import com.cabbooking.domain.User;
 import com.cabbooking.dto.Response;
 import com.cabbooking.dto.requests.AddUserRequest;
 import com.cabbooking.dto.responses.AddUserResponse;
-import com.cabbooking.services.UserService;
+import com.cabbooking.services.impl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
     @PostMapping("/")
     public Response<AddUserResponse> addUser(@RequestBody AddUserRequest addUserRequest) {
         log.debug("UserController.addUser call started...");
-        User user = userService.addUser(UserDTOConverter.convertAddUserRequestToUser(addUserRequest));
+        User user = userServiceImpl.addUser(UserDTOConverter.convertAddUserRequestToUser(addUserRequest));
         log.debug("UserController.addUser call completed...");
         return Response.<AddUserResponse>builder()
                 .data(UserDTOConverter.convertUserToAddUserResponse(user))

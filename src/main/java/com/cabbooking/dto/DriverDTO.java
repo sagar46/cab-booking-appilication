@@ -12,4 +12,5 @@ public class DriverDTO {
     private String vehicleBrand;
     private String vehicleNumber;
     private CoordinatesDTO coordinatesDTO;
+    private boolean isOccupied;
 }

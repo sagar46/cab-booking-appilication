@@ -14,4 +14,5 @@ public class DriverDAO {
     private String vehicleBrand;
     private String vehicleNumber;
     private CoordinatesDao coordinatesDao;
+    private boolean isOccupied;
 }

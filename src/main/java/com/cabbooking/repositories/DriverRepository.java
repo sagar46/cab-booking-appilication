@@ -3,6 +3,7 @@ package com.cabbooking.repositories;
 import com.cabbooking.dao.DriverDAO;
 import com.cabbooking.domain.Driver;
 import com.cabbooking.exception.CabBookingException;
+import com.cabbooking.exception.DriverNotFoundException;
 import com.cabbooking.repositories.mapper.DriverDAOConverter;
 import com.cabbooking.store.DriverStore;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Component
@@ -34,6 +36,32 @@ public class DriverRepository {
             }
         });
         return driverStore.addDriverToStore(driverDAO);
+    }
+    public void updateDriver(Driver driver){
+        List<DriverDAO> allDrivers = getAllDriver();
+        allDrivers.forEach(driverDAO -> {
+            if (Objects.equals(driverDAO.getName(), driver.getName())) {
+                if (driverDAO.isOccupied()){
+                    driverDAO.setOccupied(false);
+                }else {
+                    driverDAO.setOccupied(true);
+                }
+            }
+        });
+    }
+
+    public Driver getDriverByDriverName(String driverName) {
+        List<DriverDAO> driverDAOS = getAllDriver();
+        AtomicReference<DriverDAO> driverDAOA = new AtomicReference<>(DriverDAO.builder().build());
+        driverDAOS.forEach(driverDAO -> {
+            if (driverDAO.getName().equals(driverName)) {
+                driverDAOA.set(driverDAO);
+            }
+        });
+        if (Objects.isNull(driverDAOA.get())) {
+            throw new DriverNotFoundException("Driver not found");
+        }
+        return DriverDAOConverter.convertDriverDAOToDriver(driverDAOA.get());
     }
 
     public List<DriverDAO> getAllDriver() {

@@ -14,6 +14,7 @@ public class DriverDAOConverter {
                 .vehicleBrand(driver.getVehicleBrand())
                 .vehicleNumber(driver.getVehicleNumber())
                 .coordinatesDao(convertCoordinatesToCoordinatesDAO(driver.getCoordinates()))
+                .isOccupied(driver.isOccupied())
                 .build();
     }
 
@@ -26,6 +27,7 @@ public class DriverDAOConverter {
                 .vehicleNumber(driverDAO.getVehicleNumber())
                 .vehicleBrand(driverDAO.getVehicleBrand())
                 .coordinates(convertCoordinatesDAOToCoordinates(driverDAO.getCoordinatesDao()))
+                .isOccupied(driverDAO.isOccupied())
                 .build();
     }
 
