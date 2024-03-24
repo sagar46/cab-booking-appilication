@@ -30,11 +30,11 @@ public class RideRepository {
 
     public List<Driver> getAllDrivers() {
         log.debug("RideRepository.getAllDrivers call started...");
-        List<DriverDAO> driverDAOS = driverRepository.getAllDriver();
+        List<DriverDAO> driverDAOS = driverRepository.getDrivers();
         if (Objects.isNull(driverDAOS) || driverDAOS.isEmpty()) {
             throw new DriverNotFoundException(noDriverErrorMsg);
         }
-        List<Driver> drivers = driverRepository.getAllDriver().stream().map(DriverDAOConverter::convertDriverDAOToDriver).toList();
+        List<Driver> drivers = driverRepository.getDrivers().stream().map(DriverDAOConverter::convertDriverDAOToDriver).toList();
         log.debug("RideRepository.getAllDrivers call completed...");
         return drivers;
     }

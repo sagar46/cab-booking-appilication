@@ -34,7 +34,7 @@ public class DriverRepository {
     }
 
     public DriverDAO saveDriver(DriverDAO driverDAO) {
-        List<DriverDAO> driverDAOS = getAllDriver();
+        List<DriverDAO> driverDAOS = getDrivers();
         driverDAOS.forEach(driverExist -> {
             if (Objects.equals(driverExist.getName(), driverDAO.getName())) {
                 throw new CabBookingException(driverAlreadyExistMsg);
@@ -44,7 +44,8 @@ public class DriverRepository {
     }
 
     public void updateDriver(Driver driver) {
-        List<DriverDAO> allDrivers = getAllDriver();
+        log.debug("DriverRepository.updateDriver call started...");
+        List<DriverDAO> allDrivers = getDrivers();
         allDrivers.forEach(driverDAO -> {
             if (Objects.equals(driverDAO.getName(), driver.getName())) {
                 if (driverDAO.isOccupied()) {
@@ -54,10 +55,11 @@ public class DriverRepository {
                 }
             }
         });
+        log.debug("DriverRepository.updateDriver call completed...");
     }
 
     public Driver getDriverByDriverName(String driverName) {
-        List<DriverDAO> driverDAOS = getAllDriver();
+        List<DriverDAO> driverDAOS = getDrivers();
         AtomicReference<DriverDAO> driverDAOA = new AtomicReference<>(DriverDAO.builder().build());
         driverDAOS.forEach(driverDAO -> {
             if (driverDAO.getName().equals(driverName)) {
@@ -70,7 +72,14 @@ public class DriverRepository {
         return DriverDAOConverter.convertDriverDAOToDriver(driverDAOA.get());
     }
 
-    public List<DriverDAO> getAllDriver() {
+    public List<Driver> getAllDrivers() {
+        log.debug("DriverRepository.getAllDrivers call started...");
+        List<Driver> drivers = getDrivers().stream().map(DriverDAOConverter::convertDriverDAOToDriver).toList();
+        log.debug("DriverRepository.getAllDrivers call completed...");
+        return drivers;
+    }
+
+    public List<DriverDAO> getDrivers() {
         return driverStore.getAllDriver();
     }
 }
