@@ -9,17 +9,24 @@ import com.cabbooking.store.UserStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRepository {
     private final UserStore userStore;
+
+    @Value("${user.error.already-exist}")
+    private String userAlreadyExistMsg;
+    @Value("${user.error.not-found}")
+    private String userNotFoundMsg;
 
     public User addUser(User user) {
         log.debug("UserRepository.adduser call started...");
@@ -30,17 +37,18 @@ public class UserRepository {
     }
 
     public UserDAO saveUser(UserDAO userDAO) {
-        List<UserDAO> userDAOS = getAllUser();
+        List<UserDAO> userDAOS = getUsers();
         userDAOS.forEach(userExist -> {
             if (Objects.equals(userExist.getName(), userDAO.getName())) {
-                throw new CabBookingException("User Already exist.");
+                throw new CabBookingException(userAlreadyExistMsg);
             }
         });
         return userStore.addUserInDb(userDAO);
     }
 
     public User getUserByUsername(String username) {
-        List<UserDAO> allUsers = getAllUser();
+        log.debug("UserRepository.getUserByUsername call started...");
+        List<UserDAO> allUsers = getUsers();
         AtomicReference<UserDAO> user = new AtomicReference<>(UserDAO.builder().build());
         allUsers.forEach(userDAO -> {
             if (userDAO.getName().equals(username)) {
@@ -48,12 +56,20 @@ public class UserRepository {
             }
         });
         if (Objects.isNull(user.get())) {
-            throw new UserNotFoundException("User not found");
+            throw new UserNotFoundException(userNotFoundMsg);
         }
+        log.debug("UserRepository.getUserByUsername call completed...");
         return UserDAOConverter.convertUserDaoToUser(user.get());
     }
 
-    public List<UserDAO> getAllUser() {
+    public List<User> getAllUsers() {
+        log.debug("UserRepository.getAllUsers call started...");
+        List<User> users = getUsers().stream().map(UserDAOConverter::convertUserDaoToUser).collect(Collectors.toList());
+        log.debug("UserRepository.getAllUsers call completed...");
+        return users;
+    }
+
+    public List<UserDAO> getUsers() {
         return userStore.getAllUser();
     }
 }

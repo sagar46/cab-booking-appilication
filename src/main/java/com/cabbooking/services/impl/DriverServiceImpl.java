@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -20,5 +22,13 @@ public class DriverServiceImpl implements DriverService {
         Driver savedDrive = driverRepository.addDriver(driver);
         log.debug("DriverServiceImpl.addDriver call completed...");
         return savedDrive;
+    }
+
+    @Override
+    public List<Driver> getAllDriver() {
+        log.debug("DriverServiceImpl.getAllDriver call started...");
+        List<Driver> drivers = driverRepository.getAllDrivers();
+        log.debug("DriverServiceImpl.getAllDriver call completed...");
+        return drivers;
     }
 }

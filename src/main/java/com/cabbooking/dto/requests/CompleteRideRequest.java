@@ -4,4 +4,6 @@ import lombok.Data;
 
 @Data
 public class CompleteRideRequest {
+    private String username;
+    private String driverName;
 }

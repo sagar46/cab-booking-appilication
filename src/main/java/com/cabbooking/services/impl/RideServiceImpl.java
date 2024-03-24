@@ -13,6 +13,7 @@ import com.cabbooking.services.interfaces.RideService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,16 +28,21 @@ public class RideServiceImpl implements RideService {
     private final UserRepository userRepository;
     private final DriverRepository driverRepository;
 
+    @Value("${user.error.not-found}")
+    private String userNotFoundExistMsg;
+    @Value("${ride.error.occupied}")
+    private String rideOccupiedMsg;
+
     @Override
     public List<Driver> findRide(String username, Coordinates source, Coordinates destination) {
         log.debug("RideServiceImpl.findRide call started...");
         User user = userRepository.getUserByUsername(username);
         if (Objects.isNull(user)) {
-            throw new UserNotFoundException("User does not exist");
+            throw new UserNotFoundException(userNotFoundExistMsg);
         }
         List<Driver> availableDrivers = new ArrayList<>();
         rideRepository.getAllDrivers().forEach(driver -> {
-            if (distanceCalculator(source, driver.getCoordinates()) < 5 && driver.isOccupied()) {
+            if (distanceCalculator(source, driver.getCoordinates()) < 5 && !driver.isOccupied()) {
                 availableDrivers.add(driver);
             }
         });
@@ -45,17 +51,30 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public void chooseRide(RideData rideData) {
+    public Driver chooseRide(RideData rideData) {
         log.debug("RideServiceImpl.chooseRide call started...");
         User user = userRepository.getUserByUsername(rideData.getUsername());
         Driver driver = driverRepository.getDriverByDriverName(rideData.getDriverName());
         if (driver.isOccupied()) {
-            throw new CabBookingException("Cab is already occupied");
+            throw new CabBookingException(rideOccupiedMsg);
         }
         driverRepository.updateDriver(driver);
         rideRepository.chooseRide(rideData);
         log.debug("RideServiceImpl.chooseRise call completed...");
+        return driver;
     }
+
+    @Override
+    public Driver completeRide(RideData rideData) {
+        log.debug("RideServiceImpl.completeRide call started...");
+        User user = userRepository.getUserByUsername(rideData.getUsername());
+        Driver driver = driverRepository.getDriverByDriverName(rideData.getDriverName());
+        driverRepository.updateDriver(driver);
+        rideRepository.completeRide(rideData);
+        log.debug("RideServiceImpl.completeRide call completed...");
+        return Driver.builder().build();
+    }
+
 
     private double distanceCalculator(Coordinates coordinates1, Coordinates coordinates2) {
         return Math.sqrt(
