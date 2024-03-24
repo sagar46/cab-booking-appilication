@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UserStore {
 
     private int ID = 1;
-    private ConcurrentHashMap<String, UserDAO> userStore = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, UserDAO> userStore = new ConcurrentHashMap<>();
     @Value("${user.error.already-exist}")
     private String userAlreadyExistMsg;
     @Value("${user.error.not-found}")

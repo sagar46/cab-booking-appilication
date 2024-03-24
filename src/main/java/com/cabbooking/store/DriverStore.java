@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class DriverStore {
     private int ID = 1;
-    private ConcurrentHashMap<String, DriverDAO> driverStore = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, DriverDAO> driverStore = new ConcurrentHashMap<>();
     @Value("${driver.error.already-exist}")
     private String driverAlreadyExistMsg;
     @Value("${driver.error.not-found}")
