@@ -37,13 +37,14 @@ public class DriverRepository {
         });
         return driverStore.addDriverToStore(driverDAO);
     }
-    public void updateDriver(Driver driver){
+
+    public void updateDriver(Driver driver) {
         List<DriverDAO> allDrivers = getAllDriver();
         allDrivers.forEach(driverDAO -> {
             if (Objects.equals(driverDAO.getName(), driver.getName())) {
-                if (driverDAO.isOccupied()){
+                if (driverDAO.isOccupied()) {
                     driverDAO.setOccupied(false);
-                }else {
+                } else {
                     driverDAO.setOccupied(true);
                 }
             }

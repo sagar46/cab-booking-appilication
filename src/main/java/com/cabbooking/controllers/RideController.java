@@ -65,8 +65,9 @@ public class RideController {
                 .status(HttpStatus.OK)
                 .build();
     }
+
     @PostMapping("/completed")
-    public Response<CompleteRideResponse> completeRide(@RequestBody CompleteRideRequest completeRideRequest){
+    public Response<CompleteRideResponse> completeRide(@RequestBody CompleteRideRequest completeRideRequest) {
         log.debug("RideController.completeRide call started...");
         log.debug("RideController.completeRide call completed...");
         return Response.<CompleteRideResponse>builder()
