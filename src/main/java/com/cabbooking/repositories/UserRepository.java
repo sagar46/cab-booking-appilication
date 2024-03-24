@@ -23,43 +23,24 @@ import java.util.stream.Collectors;
 public class UserRepository {
     private final UserStore userStore;
 
-    @Value("${user.error.already-exist}")
-    private String userAlreadyExistMsg;
-    @Value("${user.error.not-found}")
-    private String userNotFoundMsg;
+
 
     public User addUser(User user) {
         log.debug("UserRepository.adduser call started...");
-        UserDAO userDAO = UserDAOConverter.convertUserToUserDao(user);
-        UserDAO savedUser = saveUser(userDAO);
+        UserDAO savedUser = saveUser(UserDAOConverter.convertUserToUserDao(user));
         log.debug("UserRepository.addUser call completed...");
         return UserDAOConverter.convertUserDaoToUser(savedUser);
     }
 
     public UserDAO saveUser(UserDAO userDAO) {
-        List<UserDAO> userDAOS = getUsers();
-        userDAOS.forEach(userExist -> {
-            if (Objects.equals(userExist.getName(), userDAO.getName())) {
-                throw new CabBookingException(userAlreadyExistMsg);
-            }
-        });
         return userStore.addUserInDb(userDAO);
     }
 
     public User getUserByUsername(String username) {
         log.debug("UserRepository.getUserByUsername call started...");
-        List<UserDAO> allUsers = getUsers();
-        AtomicReference<UserDAO> user = new AtomicReference<>(UserDAO.builder().build());
-        allUsers.forEach(userDAO -> {
-            if (userDAO.getName().equals(username)) {
-                user.set(userDAO);
-            }
-        });
-        if (Objects.isNull(user.get())) {
-            throw new UserNotFoundException(userNotFoundMsg);
-        }
+        UserDAO user = userStore.getUserByUsername(username);
         log.debug("UserRepository.getUserByUsername call completed...");
-        return UserDAOConverter.convertUserDaoToUser(user.get());
+        return UserDAOConverter.convertUserDaoToUser(user);
     }
 
     public List<User> getAllUsers() {

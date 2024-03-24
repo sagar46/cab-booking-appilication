@@ -21,10 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DriverRepository {
     private final DriverStore driverStore;
-    @Value("${driver.error.already-exist}")
-    private String driverAlreadyExistMsg;
-    @Value("${driver.error.not-found}")
-    private String driverNotFoundMsg;
+
 
     public Driver addDriver(Driver driver) {
         log.debug("DriverRepository.addDriver call started...");
@@ -34,42 +31,20 @@ public class DriverRepository {
     }
 
     public DriverDAO saveDriver(DriverDAO driverDAO) {
-        List<DriverDAO> driverDAOS = getDrivers();
-        driverDAOS.forEach(driverExist -> {
-            if (Objects.equals(driverExist.getName(), driverDAO.getName())) {
-                throw new CabBookingException(driverAlreadyExistMsg);
-            }
-        });
         return driverStore.addDriverToStore(driverDAO);
     }
 
     public void updateDriver(Driver driver) {
         log.debug("DriverRepository.updateDriver call started...");
-        List<DriverDAO> allDrivers = getDrivers();
-        allDrivers.forEach(driverDAO -> {
-            if (Objects.equals(driverDAO.getName(), driver.getName())) {
-                if (driverDAO.isOccupied()) {
-                    driverDAO.setOccupied(false);
-                } else {
-                    driverDAO.setOccupied(true);
-                }
-            }
-        });
+        driverStore.updateDriverStatus(driver.getName());
         log.debug("DriverRepository.updateDriver call completed...");
     }
 
     public Driver getDriverByDriverName(String driverName) {
-        List<DriverDAO> driverDAOS = getDrivers();
-        AtomicReference<DriverDAO> driverDAOA = new AtomicReference<>(DriverDAO.builder().build());
-        driverDAOS.forEach(driverDAO -> {
-            if (driverDAO.getName().equals(driverName)) {
-                driverDAOA.set(driverDAO);
-            }
-        });
-        if (Objects.isNull(driverDAOA.get())) {
-            throw new DriverNotFoundException(driverNotFoundMsg);
-        }
-        return DriverDAOConverter.convertDriverDAOToDriver(driverDAOA.get());
+        log.debug("DriverRepository.getDriverByDriverName call started...");
+      DriverDAO driver = driverStore.findDriverByUsername(driverName);
+        log.debug("DriverRepository.getDriverByDriverName call completed...");
+      return DriverDAOConverter.convertDriverDAOToDriver(driver);
     }
 
     public List<Driver> getAllDrivers() {
