@@ -11,10 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class DriverStore {
-    private int ID = 1;
+    private AtomicInteger ID = new AtomicInteger(1);
     private final ConcurrentHashMap<String, DriverDAO> driverStore = new ConcurrentHashMap<>();
     @Value("${driver.error.already-exist}")
     private String driverAlreadyExistMsg;
@@ -26,7 +27,7 @@ public class DriverStore {
         if (Objects.nonNull(driverExist)){
             throw new DuplicateUserOrDriverException(driverAlreadyExistMsg);
         }
-        driverDAO.setId(ID++);
+        driverDAO.setId(ID.incrementAndGet());
         driverStore.put(driverDAO.getName(),driverDAO);
         return driverDAO;
     }

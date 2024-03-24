@@ -12,11 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class UserStore {
 
-    private int ID = 1;
+    private AtomicInteger ID = new AtomicInteger(1);
     private final ConcurrentHashMap<String, UserDAO> userStore = new ConcurrentHashMap<>();
     @Value("${user.error.already-exist}")
     private String userAlreadyExistMsg;
@@ -28,7 +29,7 @@ public class UserStore {
         if (Objects.nonNull(userExist)){
             throw new DuplicateUserOrDriverException(userAlreadyExistMsg);
         }
-        userDAO.setId(ID++);
+        userDAO.setId(ID.incrementAndGet());
         userStore.put(userDAO.getName(), userDAO);
         return userDAO;
     }
